@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!-- 
+	@titre du fichier: index.html	
+	@auteur: Pierre-Luc Maître, Kevin Lim
+	@code permanent: MAIP20118804, Limk15019302
+	@date d'édition: 10/12/2016
+	@description: Le Programme permet à un utilisateur de simuler un trajet d'avion entre des villes situés
+	sur une carte du canada. Le temps est représenté selon une échelle. L'utilisateur choisis une vion pour le trajet avec une vitesse
+	de basse. Le programme ne simule pas l'accélération de l'avion. L'avion ne peu que se déplacer qu'à sa vitesse
+	de base. L'utilisateur peut augmenter ou diminuer l'échelle de temps ce qui a pour effet d'augmenter ou de diminuer la rapidité du déplacement 
+	de l'avion à l'écran. L'utilisateur peut en cours d'éxécution du trajet, inverser le sens du temps ou arrêter le temps.
+	Le programme gère aussi les te^ps d'atentes dans les aéroports.
+	
+	note: toutes les librairies ont été créé entièrement par les étudiants de ce présent travail pratique à l'exception 
+	de celles utilisées pour la galerie de photo qui ont été prise sur internet à l'adresse (http://www.rhinoslider.com/)
+-->
+<html>
+    <head>
+        <title>Menu déroulant</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link type="text/css" rel="stylesheet" href="css/rhinoslider-1.05.css" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/rhinoslider-1.05.min.js"></script>
+        <script type="text/javascript" src="js/mousewheel.js"></script>
+        <script type="text/javascript" src="js/easing.js"></script>
+        <script type="text/javascript" src="js/mov.lib.js"></script>
+        <script type="text/javascript" src="js/chrono.lib.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+    </head>
+    <body>
+        <div class="central wraper">
+            <div id="logo">
+                <img src='img/uqamairlines.png' alt="logo de l'UQAM airlines">
+            </div>
+        
+            <div class="conteneur-de-la-carte">
+                <div id="gauche">
+                    <div id="formulaireAjoutEscale" >
+        
+                        <select id="selectVille">
+                            <option value="-1">Ajouter escale</option>
+                        </select>
+                        
+                        <div id="listeEscales">
+                            <div class="liste"></div>
+                        </div>
+                        <div class="paramGlobaux">
+                                    <select id="selectAvion"></select>
+                        </div>
+                        <button id="soumettreListeEscale">Recharger la carte</button>
+                    </div>
+                    
+                </div>
+                <div class="centreEssai">
+                    
+                    <div class="menu-wrap">
+                        <nav>
+                            <ul>
+                                <li>
+                                    <a href="#">Modifier la map du Canada <span class="arrow">&#9660;</span></a>
+            
+                                    <ul>
+                                        <li>
+                                            <a href="#">Changer l'opacité</a>
+                                            <ul>
+                                               <li>
+                                                    <span onclick="changeOpacite('#leCanevas', 0.25)">Changer l'opacité à 25%</span>
+                                               </li> 
+                                               <li>
+                                                    <span onclick="changeOpacite('#leCanevas', 0.5)">Changer l'opacité à 50%</span>
+                                               </li> 
+                                               <li>
+                                                   <span onclick="changeOpacite('#leCanevas', 0.75)">Changer l'opacité à 75%</span>
+                                               </li> 
+                                               <li>
+                                                   <span onclick="changeOpacite('#leCanevas', 1)">Changer l'opacité à 100%</span>
+                                               </li> 
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Affichage de l'information <span class="arrow">&#9660;</span></a>
+            
+                                    <ul>
+                                        <li>
+                                            <span onclick="toogleListeBalise(event, ['#imageSlider'])">cacher la galerie de photos</span>
+                                        </li>
+                                        <li>
+                                            <span onclick="toogleListeBalise(event, ['#gauche', '#imageSlider'])">Cacher l'itinéraire et la galerie de photos</span>
+                                        </li>
+                                        <li>
+                                            <span onclick="toogleListeBalise(event, ['#gauche'])">Cacher le formulaire d'adjout de villes</span>
+                                        </li>
+                                        
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    
+                    
+                    <div id="carte">
+                        <canvas id="leCanevas">canvas</canvas>
+                        <div id="carre">
+                            <div id="itineraire">
+                                <table>
+                                    <tr>
+                                        <td>Villes: </td><td id="villes"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distance: </td><td id="distance"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vitesse: </td><td id="vitesseAvion"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date: </td><td id="compteur"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Compteur: </td><td id="tempsDepuis"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ratio temp</td><td id="vitesse"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>restant: </td><td id="compteur2"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="boutons">
+                        <button id="foward"> Reculer </button> 
+                        <button id="pause"> Pause </button> 
+                        <button id="play"> Commencer </button>
+                        <button id="decrem"> Ralentir </button>
+                        <button id="increm"> Accélérer </button> 
+                    </div>
+                </div>
+                
+            </div>
+   
+            <div id="imageSlider">
+                <ul id="slider">
+                    <li><div class="rhino-caption">Monsieur Pilote<img src="img/pilot.jpg" alt="pilote" /></div></li>
+                    <li><div class="rhino-caption">Monsieur Copilote<img src="img/copilot.jpg" alt="copilote" /></div></li>
+                    <li><div class="rhino-caption">Madame Hotesse1<img src="img/hotesse1.jpg" alt="hotesse 1" /></div></li>
+                    <li><div class="rhino-caption">Madame Hotesse2<img src="img/hotesse2.jpg" alt="hotesse 2"/></div></li>
+                    <li><div class="rhino-caption">Madame Hotesse3<img src="img/hotesse3.jpg" alt="hotesse 3"/></div></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
