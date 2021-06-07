@@ -29,3 +29,9 @@ En local, simplement ouvrir index.html avec un navigateur
 Le démo sur heroku utilise php afin d'êter compatible avec les buildpack standards offerts.
 
 [Application déployée sur heroku)](https://inf2005-tp2-2016.herokuapp.com/)
+
+## License 
+
+Le projet est sous licence MIT X11.
+
+Consulter le fichier [LICENSE.md](LICENSE.md) pour les détails de la licence.
